@@ -33,7 +33,7 @@ class SdpEstimator(object):
     def _M_hat_eps(self):
         M = np.identity(self.p) / self.p
         U = np.zeros((self.p, self.p))
-        N = ceil((self.lbda * self.lbda * self.p * self.p + 1)/ sqrt(2) / self.eps)
+        N = int(ceil((self.lbda * self.lbda * self.p * self.p + 1)/ sqrt(2) / self.eps))
         self.M_hat_eps = np.zeros((self.p, self.p))
         for _ in range(N):
             U2 = self._proj_sym_U(U - 1 / sqrt(2) * M)
@@ -44,7 +44,7 @@ class SdpEstimator(object):
         self.M_hat_eps /= N
             
     def _proj_sym_U(self, A):
-        A2 = A.clone()
+        A2 = np.array(A)
         for i in range(A.shape[0]):
             for j in range(A.shape[1]):
                 if self.lbda < np.abs(A[i, j]):
@@ -65,5 +65,11 @@ class SdpEstimator(object):
         return P.dot(np.diag(d).dot(P.transpose()))
     
     def _sdp_hat(self):
-        # TODO
-        pass
+        w, v = np.linalg.eig(self.M_hat_eps)
+        max_w = w[0]
+        max_i = 0
+        for i in range(1, len(w)):
+            if w[i] > max_w:
+                max_w = w[i]
+                max_i = i
+        self.sdp_hat = v[:, max_i]

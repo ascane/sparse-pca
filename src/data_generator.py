@@ -24,4 +24,3 @@ class DataGenerator(object):
 if __name__ == "__main__":
     dg = DataGenerator(2, 5, 2)
     print dg.getX()
-    
