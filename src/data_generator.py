@@ -20,6 +20,10 @@ class DataGenerator(object):
             self._generate()
         return self.v
     
+    def reset(self):
+        self.X = None
+        self.v = None
+    
     def _generate(self):
         self.v = np.zeros(self.p)
         for i in range(self.k):
