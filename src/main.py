@@ -17,8 +17,7 @@ def mean_loss_quad(p, mu, n_iter=1, verbose=False):
     return _mean_loss(p, n, k, n_iter, verbose)
 
 def _mean_loss(p, n, k, n_iter, verbose):
-    if verbose:
-        print "p = %s, n = %s, k = %s" %(p, n, k)
+    print "p = %s, n = %s, k = %s" %(p, n, k)
     dg = data_generator.DataGenerator(p, n, k)
     loss_sum = 0
     for i in range(n_iter):
@@ -37,9 +36,10 @@ def _mean_loss(p, n, k, n_iter, verbose):
             print v
             print "v_sdp ="
             print v_sdp
-            print "loss = %f" %l
+        print "loss = %f" %l
     return loss_sum / n_iter
 
 if __name__ == "__main__":
-    mean_l = mean_loss_lin(p=50, mu=500, n_iter=2, verbose=True)
-    print "mean loss = %f" %mean_l
+    for _mu in range(50, 1001, 50):
+        mean_l = mean_loss_lin(p=50, mu=_mu, n_iter=100, verbose=False)
+        print "mean loss = %f" %mean_l
