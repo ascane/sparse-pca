@@ -6,21 +6,25 @@ import data_generator, sdp_estimator
 def loss(u, v):
     return sqrt(1 - (u.dot(v)) ** 2)
 
-def mean_loss_lin(p, mu, n_iter=1, verbose=False):
+def mean_loss_lin(p, mu, n_iter=1, verbose=False, output=None):
     k = int(floor(sqrt(p)))
     n = int(floor(mu * k * np.log10(p)))
-    return _mean_loss(p, n, k, n_iter, verbose)
+    return _mean_loss(p, n, k, n_iter, verbose, output)
 
-def mean_loss_quad(p, mu, n_iter=1, verbose=False):
+def mean_loss_quad(p, mu, n_iter=1, verbose=False, output=None):
     k = int(floor(sqrt(p)))
     n = int(floor(mu * k * k * np.log10(p)))
-    return _mean_loss(p, n, k, n_iter, verbose)
+    return _mean_loss(p, n, k, n_iter, verbose, output)
 
-def _mean_loss(p, n, k, n_iter, verbose):
+def _mean_loss(p, n, k, n_iter, verbose, output):
+    if not(output is None):
+        output.write("p = %s, n = %s, k = %s \n" %(p, n, k))
     print "p = %s, n = %s, k = %s" %(p, n, k)
     dg = data_generator.DataGenerator(p, n, k)
     loss_sum = 0
     for i in range(n_iter):
+        if not(output is None):
+            output.write("round %d \n" %(i + 1))
         print "round %d" %(i + 1)
         dg.reset()
         X = dg.get_X()
@@ -36,10 +40,15 @@ def _mean_loss(p, n, k, n_iter, verbose):
             print v
             print "v_sdp ="
             print v_sdp
+        if not(output is None):
+            output.write("loss = %f \n" %l)
         print "loss = %f" %l
     return loss_sum / n_iter
 
 if __name__ == "__main__":
-    for _mu in range(50, 1001, 50):
-        mean_l = mean_loss_lin(p=50, mu=_mu, n_iter=100, verbose=False)
-        print "mean loss = %f" %mean_l
+    _p = 100
+    with open("../output/p=" + str(_p) + ".txt", "w") as f: 
+        for _mu in range(50, 1001, 50):
+            mean_l = mean_loss_lin(p=_p, mu=_mu, n_iter=100, verbose=False, output=f)
+            f.write("mean loss = %f \n" %mean_l)
+            print "mean loss = %f" %mean_l
