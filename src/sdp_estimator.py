@@ -2,6 +2,9 @@ from math import ceil, sqrt
 import numpy as np
 
 class SdpEstimator(object):
+    """A class that computes a semidefinite relaxation estimator of the first eigenvector
+    of the covariance matrix from which the rows of X are generated.
+    """
     def __init__(self, X, lbda, eps):
         assert lbda > 0
         assert eps > 0
@@ -20,6 +23,8 @@ class SdpEstimator(object):
         return self.sdp_hat
         
     def _sdp(self):
+        """Algorithm 1 in the paper.
+        """
         if self.sigma_hat is None:
             self._sigma_hat()
         if self.M_hat_eps is None:
@@ -28,9 +33,13 @@ class SdpEstimator(object):
             self._sdp_hat()
     
     def _sigma_hat(self):
+        """Step 1 of Algorithm 1.
+        """
         self.sigma_hat = self.X.transpose().dot(self.X) / self.n
     
     def _M_hat_eps(self):
+        """Algorithm 2 in the paper, i.e. Step 2 of Algorithm 1.
+        """
         M = np.identity(self.p) / self.p
         U = np.zeros((self.p, self.p))
         N = int(ceil((self.lbda * self.lbda * self.p * self.p + 1)/ sqrt(2) / self.eps))
@@ -65,6 +74,8 @@ class SdpEstimator(object):
         return P.dot(np.diag(d).dot(P.transpose()))
     
     def _sdp_hat(self):
+        """Step 3 of Algorithm 1. (This could be optimized, but is unnecessary.)
+        """
         w, v = np.linalg.eig(self.M_hat_eps)
         max_w = w[0]
         max_i = 0

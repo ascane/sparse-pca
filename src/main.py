@@ -46,10 +46,12 @@ def _mean_loss(p, n, k, n_iter, theta, verbose, output):
     return loss_sum / n_iter
 
 if __name__ == "__main__":
+    # These are the parameters and can be changed to other values.
     _p = 50
     _theta = 5
+    _n_iter = 100
     with open("../output/p=" + str(_p) + ".txt", "w") as f: 
         for _nu in range(50, 1001, 50):
-            mean_l = mean_loss_lin(p=_p, nu=_nu, n_iter=100, theta=_theta, verbose=False, output=f)
+            mean_l = mean_loss_lin(p=_p, nu=_nu, n_iter=_n_iter, theta=_theta, verbose=False, output=f)
             f.write("mean loss = %f \n" %mean_l)
             print "mean loss = %f" %mean_l

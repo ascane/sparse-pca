@@ -1,7 +1,10 @@
-import numpy as np
 from math import sqrt
+import numpy as np
 
 class DataGenerator(object):
+    """A class that generates X = (X_1, ..., X_n)^T, where X_1, ..., X_n ~(i.i.d.) N_p(0, Sigma),
+    Sigma = I_p + theta v_1 v_1^T, v_1 k-sparse.
+    """
     def __init__(self, p, n, k, theta=1.):
         self.p = p
         self.n = n
